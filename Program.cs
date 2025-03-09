@@ -47,10 +47,12 @@ namespace CVhantering
 
             app.UseAuthorization();
 
-            // Endpoints for Person and Github
+            // Endpoint
             PersonEndpoints.CVEndpoints(app);
-            GithubEndpoint.GetGithubRepo(app); 
-            
+            GithubEndpoint.GetGithubRepo(app);
+            WorkEndpoints.WorkEndpoint(app);
+            EducationEndpoints.EduEndpoint(app);
+
 
             app.Run();
         }
