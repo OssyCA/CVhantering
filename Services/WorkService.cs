@@ -54,7 +54,7 @@ namespace CVhantering.Services
             };
 
             person.WorkExperiences.Add(newWork);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(); 
 
             return ResultHelper<WorkExperienceDto>.Success(MapWorkExperienceDto(newWork));
         }
