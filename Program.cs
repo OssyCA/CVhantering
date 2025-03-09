@@ -27,8 +27,13 @@ namespace CVhantering
                 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            builder.Services.AddScoped<PersonServices>(); //dependency injection of the PersonServices Create a new instance of the PersonServices class for each request
+            // Dependency Injections for services
+            builder.Services.AddScoped<PersonServices>(); 
             builder.Services.AddScoped<GithubService>();
+            builder.Services.AddScoped<WorkService>();
+            builder.Services.AddScoped<EduService>();
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -42,7 +47,8 @@ namespace CVhantering
 
             app.UseAuthorization();
 
-            PersonEndpoints.PersonGetEndpoint(app);
+            // Endpoints for Person and Github
+            PersonEndpoints.CVEndpoints(app);
             GithubEndpoint.GetGithubRepo(app); 
             
 

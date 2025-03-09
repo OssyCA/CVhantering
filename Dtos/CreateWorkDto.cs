@@ -1,5 +1,6 @@
 ﻿using CVhantering.Models;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CVhantering.Dtos
 {
@@ -12,7 +13,7 @@ namespace CVhantering.Dtos
         [StringLength(50, MinimumLength = 3)]
         public string WorkTitle { get; set; }
         [Required]
-        public DateTime StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        public string StartDate { get; set; }
+        public string? EndDate { get; set; }
     }
 }
