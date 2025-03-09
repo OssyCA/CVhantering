@@ -78,11 +78,39 @@ namespace CVhantering.Services
                 FirstName = cP.FirstName,
                 LastName = cP.LastName
             };
-
+            context.Persons.Add(newPerson);
             await context.SaveChangesAsync();
             return ResultHelper<PersonDto>.Success(personDto);
             
         }
+        public async Task<ResultHelper<PersonDto>> UpdatePerson(int id, UpdatePersonDto dto)
+        {
+            var person = await context.Persons.FindAsync(id);
+            if (person == null)
+                return ResultHelper<PersonDto>.Failure(["Person not found"]);
+
+            person.FirstName = !string.IsNullOrEmpty(dto.FirstName) ? dto.FirstName : person.FirstName;
+            person.LastName = !string.IsNullOrEmpty(dto.LastName) ? dto.LastName : person.LastName;
+            person.Email = !string.IsNullOrEmpty(dto.Email) ? dto.Email : person.Email;
+            person.Phone = !string.IsNullOrEmpty(dto.Phone) ? dto.Phone : person.Phone;
+
+            if (!string.IsNullOrWhiteSpace(dto.Birthday))
+            {
+                if (DateTime.TryParse(dto.Birthday, out DateTime birthday))
+                    person.Birthday = birthday;
+                else
+                    return ResultHelper<PersonDto>.Failure(["Invalid birthday format"]);
+            }
+
+            await context.SaveChangesAsync();
+
+            return ResultHelper<PersonDto>.Success(new PersonDto
+            {
+                FirstName = person.FirstName,
+                LastName = person.LastName
+            });
+        }
+
 
     }
 }

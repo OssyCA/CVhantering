@@ -43,8 +43,46 @@ namespace CVhantering.EndpointFolder
             });
             app.MapPost("person", async (PersonServices ps, CreatePersonDto cp) =>
             {
+                var validErrors = ValidateObjekts.ValidateObject(cp);
+
+                if (validErrors.Any())
+                {
+                    string errors = string.Join("||", validErrors);
+                    return Results.BadRequest(errors);
+                }
+                var result = await ps.CreatePerson(cp);
+
+                if (result.IsSuccess)
+                {
+                    return Results.Ok(result.Data);
+                }
+                else
+                {
+                    return Results.BadRequest(result.Errors);
+                }
+
 
             });
+            app.MapPut("person/{id}", async (PersonServices ps, UpdatePersonDto upDto, int id) =>
+            {
+                var validErrors = ValidateObjekts.ValidateObject(upDto);
+                if (validErrors.Any())
+                {
+                    string errors = string.Join("||", validErrors);
+                    return Results.BadRequest(errors);
+                }
+
+                var result = await ps.UpdatePerson(id, upDto);
+                if (result.IsSuccess)
+                {
+                    return Results.Ok(result.Data);
+                }
+                else
+                {
+                    return Results.BadRequest(result.Errors);
+                }
+            });
+
 
 
             /// WORK
@@ -53,7 +91,7 @@ namespace CVhantering.EndpointFolder
                 var validationErrors = ValidateObjekts.ValidateObject(cwDto);
                 if (validationErrors.Any())
                 {
-                    string errors = string.Join(" ", validationErrors);
+                    string errors = string.Join("||", validationErrors);
                     return Results.BadRequest(errors);
                 }
                 var result = await ws.AddWorkExperience(id, cwDto);
@@ -112,9 +150,10 @@ namespace CVhantering.EndpointFolder
             {
 
                 var validationErrors = ValidateObjekts.ValidateObject(ceDto); // validate the object
-                if (validationErrors.Any()) // if there are any validation errors
+                if (validationErrors.Any())
                 {
-                    return Results.BadRequest(new { Errors = validationErrors }); // return a bad request with the errors
+                    string errors = string.Join("||", validationErrors);
+                    return Results.BadRequest(errors);
                 }
 
                 var result = await eduService.AddEducation(id, ceDto); // add the education
@@ -139,7 +178,8 @@ namespace CVhantering.EndpointFolder
                 var validationErrors = ValidateObjekts.ValidateObject(edto);
                 if (validationErrors.Any())
                 {
-                    return Results.BadRequest(new { Errors = validationErrors });
+                    string errors = string.Join("||", validationErrors);
+                    return Results.BadRequest(errors);
                 }
 
                 var result = await es.UpdateEducation(id, edto);
